@@ -1,0 +1,4 @@
+[submodule "svelte-language-tools"]
+	path = svelte-language-tools
+	url = https://github.com/datstarkey/language-tools.git
+	branch = feat/dependency-svelte-dts-generation

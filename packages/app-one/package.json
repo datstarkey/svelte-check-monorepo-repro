@@ -1,0 +1,8 @@
+{
+    "name": "@repro/app-one",
+    "version": "1.0.0",
+    "type": "module",
+    "devDependencies": {
+        "@repro/shared": "workspace:*"
+    }
+}
