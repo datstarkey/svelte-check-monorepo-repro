@@ -1,19 +1,19 @@
 {
-	"name": "@repro/app-one",
-	"version": "1.0.0",
-	"type": "module",
-	"scripts": {
-		"check": "svelte-check --tsconfig ./tsconfig.json --tsgo"
-	},
-	"devDependencies": {
-		"@repro/shared": "workspace:*",
-		"@sveltejs/adapter-auto": "catalog:",
-		"@sveltejs/kit": "catalog:",
-		"@sveltejs/vite-plugin-svelte": "catalog:",
-		"@typescript/native-preview": "catalog:",
-		"svelte": "catalog:",
-		"svelte-check": "catalog:",
-		"typescript": "catalog:",
-		"vite": "catalog:"
-	}
+  "name": "@repro/app-one",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --tsgo"
+  },
+  "devDependencies": {
+    "@repro/shared": "workspace:*",
+    "@sveltejs/adapter-auto": "catalog:",
+    "@sveltejs/kit": "catalog:",
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "svelte": "catalog:",
+    "svelte-check": "file:../../svelte-language-tools/packages/svelte-check",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
 }
