@@ -9,8 +9,8 @@
     }
   },
   "scripts": {
-    "sync": "svelte-kit sync",
-    "check": "svelte-check --tsconfig ./tsconfig.json --tsgo"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:go": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --tsgo"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "catalog:",

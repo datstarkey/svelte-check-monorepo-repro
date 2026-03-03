@@ -8,79 +8,60 @@ In a monorepo with a shared Svelte component library:
 
 ```
 packages/
-  shared/         ← @repro/shared: exports Button, Card with typed $props()
-  app-one/        ← imports Button, passes number to string prop
-  app-two/        ← imports Card, passes boolean/number to string props
+  shared/       ← @repro/shared: exports Button, Card with typed $props()
+  app-one/      ← imports Button, passes number to string prop (uses fixed svelte-check)
+  app-two/      ← imports Card, passes boolean/number to string props (uses stock svelte-check)
 ```
 
-Running `svelte-check --tsgo` on the apps reports **0 errors** — the type mismatches are invisible because dependency component props resolve to `any`.
-
-## Reproduce
+## Setup
 
 ```bash
 git clone --recurse-submodules https://github.com/datstarkey/svelte-check-monorepo-repro.git
 cd svelte-check-monorepo-repro
-pnpm install
-```
 
-### Step 1: Stock svelte-check (v4.4.4) — 0 errors (bug)
-
-```bash
-pnpm --filter @repro/app-one check
-pnpm --filter @repro/app-two check
-```
-
-Both report **0 errors**. The intentional type mismatches (`label={123}`, `title={true}`, etc.) are not caught.
-
-### Step 2: Build the fixed svelte-check from the submodule
-
-```bash
+# Build the fixed svelte-check from the submodule
 cd svelte-language-tools
 pnpm install
 pnpm -r --filter svelte2tsx --filter svelte-language-server --filter svelte-check run build
 cd ..
-```
 
-### Step 3: Swap to the fixed version
-
-In `packages/app-one/package.json` and `packages/app-two/package.json`, change:
-
-```diff
-- "svelte-check": "catalog:",
-+ "svelte-check": "file:../../svelte-language-tools/packages/svelte-check",
-```
-
-Then reinstall:
-
-```bash
+# Install workspace dependencies
 pnpm install
 ```
 
-### Step 4: Fixed svelte-check — errors detected
+## Reproduce
+
+### app-two — stock svelte-check (the bug)
+
+app-two uses **stock svelte-check v4.4.4** from npm.
 
 ```bash
-pnpm --filter @repro/app-one check
-pnpm --filter @repro/app-two check
+pnpm --filter @repro/app-two check      # normal mode: 3 errors (works fine)
+pnpm --filter @repro/app-two check:go   # --tsgo mode: 0 errors (BUG!)
 ```
 
-Now the type errors are correctly reported:
+Normal `svelte-check` catches all 3 type errors, but `--tsgo` reports **0 errors** — the dependency component props resolve to `any`.
 
+### app-one — fixed svelte-check (the fix)
+
+app-one uses the **fixed svelte-check** from the submodule (`file:../../svelte-language-tools/packages/svelte-check`).
+
+```bash
+pnpm --filter @repro/app-one check      # normal mode: 1 error
+pnpm --filter @repro/app-one check:go   # --tsgo mode: 1 error
 ```
-app-one: ERROR "src/routes/+page.svelte" — Type 'number' is not assignable to type 'string'.
-app-two: ERROR "src/routes/+page.svelte" — Type 'boolean' is not assignable to type 'string'.
-app-two: ERROR "src/routes/+page.svelte" — Type 'number' is not assignable to type 'string'.
-app-two: ERROR "src/routes/+page.svelte" — Type 'boolean' is not assignable to type 'string'.
-```
+
+Both modes correctly report the type error: `Type 'number' is not assignable to type 'string'`.
 
 ## How the Fix Works
 
-The fix auto-generates `.svelte.d.ts` declaration files for Svelte components found in workspace dependency packages, enabling TypeScript to properly type-check imported component props instead of resolving them to `any`.
+The fix auto-generates `.svelte.d.ts` declaration files for Svelte components found in workspace dependency packages, enabling TypeScript to properly type-check imported component props in `--tsgo`/`--incremental` mode instead of resolving them to `any`.
 
 ## Structure
 
 | Path | Description |
 |------|-------------|
 | `packages/shared/` | `@repro/shared` — Svelte 5 components with typed `$props()` |
-| `packages/app-one/` | SvelteKit app importing `Button` with intentional type error |
-| `packages/app-two/` | SvelteKit app importing `Card` with intentional type errors |
+| `packages/app-one/` | SvelteKit app using **fixed** svelte-check — errors caught in both modes |
+| `packages/app-two/` | SvelteKit app using **stock** svelte-check — `--tsgo` misses errors |
 | `svelte-language-tools/` | Git submodule — [PR branch](https://github.com/datstarkey/language-tools/tree/feat/dependency-svelte-dts-generation) |

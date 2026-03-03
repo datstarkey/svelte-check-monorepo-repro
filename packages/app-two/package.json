@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --tsgo"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:go": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --tsgo"
   },
   "devDependencies": {
     "@repro/shared": "workspace:*",
