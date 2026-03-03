@@ -1,3 +1,5 @@
 node_modules/
 .svelte-check/
+.svelte-kit/
 dist/
+build/

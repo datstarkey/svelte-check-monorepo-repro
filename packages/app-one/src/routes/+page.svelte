@@ -1,6 +1,8 @@
 <script lang="ts">
-    import { Button } from '@repro/shared/components';
+	import { Button } from '@repro/shared/components';
 </script>
+
+<h1>App One</h1>
 
 <!-- Correct usage -->
 <Button label="Click me" disabled={false} />

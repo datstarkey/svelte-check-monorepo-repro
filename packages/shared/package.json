@@ -1,11 +1,21 @@
 {
-    "name": "@repro/shared",
-    "version": "1.0.0",
-    "type": "module",
-    "exports": {
-        "./components": {
-            "types": "./src/lib/components/index.ts",
-            "svelte": "./src/lib/components/index.ts"
-        }
-    }
+	"name": "@repro/shared",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./components": {
+			"types": "./src/lib/components/index.ts",
+			"svelte": "./src/lib/components/index.ts"
+		}
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "catalog:",
+		"@sveltejs/kit": "catalog:",
+		"@sveltejs/vite-plugin-svelte": "catalog:",
+		"@typescript/native-preview": "catalog:",
+		"svelte": "catalog:",
+		"svelte-check": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:"
+	}
 }
